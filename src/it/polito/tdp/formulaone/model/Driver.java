@@ -80,6 +80,14 @@ public class Driver {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+	public Driver(int driverId) {
+		super();
+		this.driverId = driverId;
+	}
+	@Override
+	public String toString() {
+		return "Driver [driverId=" + driverId + ", forename=" + forename + ", surname=" + surname + "]";
+	}
 	
 	
 	

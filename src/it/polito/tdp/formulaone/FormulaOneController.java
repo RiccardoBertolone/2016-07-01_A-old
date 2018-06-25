@@ -1,9 +1,12 @@
 package it.polito.tdp.formulaone;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.formulaone.model.DriverPunteggio;
 import it.polito.tdp.formulaone.model.Model;
+import it.polito.tdp.formulaone.model.Season;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -21,7 +24,7 @@ public class FormulaOneController {
     private URL location;
 
     @FXML
-    private ComboBox<?> boxAnno;
+    private ComboBox<Season> boxAnno;
 
     @FXML
     private TextField textInputK;
@@ -31,7 +34,19 @@ public class FormulaOneController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear() ;
+    	Season s = boxAnno.getValue() ;
+    	if (s==null) {
+    		txtResult.setText("Selezionare una stagione");
+    		return ;
+    	}
+    	this.model.creaGrafo(s) ;
+    	DriverPunteggio d = this.model.getPilotaMigliore() ;
+    	
+    	txtResult.setText("Ecco il pilota migliore:\n");
+    	txtResult.appendText(d.getD()+" (Vittorie-sconfitte = "+d.getPunteggio()+"\n");
+    	
+    	
     }
 
     @FXML
@@ -49,5 +64,7 @@ public class FormulaOneController {
     
     public void setModel(Model model){
     	this.model = model;
+    	List<Season> seasons = model.getAllSeasons() ;
+    	this.boxAnno.getItems().addAll(seasons) ;
     }
 }

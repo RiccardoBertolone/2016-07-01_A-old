@@ -45,6 +45,33 @@ public class LapTime {
 	public String getTime() {
 		return time;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + driverId;
+		result = prime * result + lap;
+		result = prime * result + raceId;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LapTime other = (LapTime) obj;
+		if (driverId != other.driverId)
+			return false;
+		if (lap != other.lap)
+			return false;
+		if (raceId != other.raceId)
+			return false;
+		return true;
+	}
+	
 	public void setTime(String time) {
 		this.time = time;
 	}
@@ -54,6 +81,7 @@ public class LapTime {
 	public void setMiliseconds(int miliseconds) {
 		this.miliseconds = miliseconds;
 	}
+	
 	
 	
 }
