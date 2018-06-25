@@ -152,41 +152,41 @@ public class FormulaOneDAO {
 	}
 
 	public List<PilotiVittorie> getPilotiVittorie(Season s) {
-//		String sql = "SELECT Distinct drivers.driverId, drivers.driverRef, drivers.number, drivers.code, drivers.forename, drivers.surname, drivers.dob, drivers.nationality, drivers.url " + 
-//					"FROM results, races, drivers " + 
-//					"WHERE position <> 'null' " + 
-//					"AND results.raceId = races.raceId " + 
-//					"AND races.year = ? " + 
-//					"AND results.driverId = drivers.driverId ";
-//	
-//		try {//tutte le gare della stagione, vedere tutti i risultati, fare un from sui risultati,
-//			//vincolo posizione minore, raggruppare per pilota, contare i records
-//			
-//			Connection conn = DBConnect.getConnection();
-//	
-//			PreparedStatement st = conn.prepareStatement(sql);
-//			st.setInt(1, s.getYear().getValue());
-//	
-//			ResultSet rs = st.executeQuery();
-//	
-//			List<PilotiVittorie> pilotiVittorie = new ArrayList<>();
-//			while (rs.next()) {
-//				Date data = rs.getDate("drivers.dob") ;
-//				LocalDate ldata = null ;
-//				if (data!=null) {
-//					ldata = rs.getDate("drivers.dob").toLocalDate() ;
-//				}
-//				Driver d = new Driver(rs.getInt("drivers.driverId"), rs.getString("drivers.driverRef"), rs.getInt("drivers.number"), rs.getString("drivers.code"), rs.getString("drivers.forename"), rs.getString("drivers.surname"), ldata, rs.getString("drivers.nationality"), rs.getString("drivers.url")) ;
-//				drivers.add(d) ;
-//			}
-//	
-//			conn.close();
-//			return drivers;
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//			throw new RuntimeException("SQL Query Error");
-//		}
-		return null ;
+		String sql = "SELECT r1.driverId, r2.driverId, COUNT(ra1.raceId) as cnt " + 
+					"FROM races as ra1, results as r1, races as ra2, results as r2 " + 
+					"WHERE ra1.raceId = r1.raceId " + 
+					"AND ra1.year = ? " + 
+					"AND ra2.raceId = r2.raceId " + 
+					"AND ra2.year = ? " + 
+					"AND r1.driverId <> r2.driverId " + 
+					"AND r1.position < r2.position " + 
+					"AND ra1.raceId = ra2.raceId " + 
+					"Group by r1.driverId, r2.driverId ";
+	
+		try {
+			
+			Connection conn = DBConnect.getConnection();
+	
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, s.getYear().getValue());
+			st.setInt(2, s.getYear().getValue());
+	
+			ResultSet rs = st.executeQuery();
+	
+			List<PilotiVittorie> pilotiVittorie = new ArrayList<>();
+			while (rs.next()) {
+				Driver d1 = new Driver(rs.getInt("r1.driverId")) ;
+				Driver d2 = new Driver(rs.getInt("r2.driverId")) ;
+				int vittorie = rs.getInt("cnt") ;
+				pilotiVittorie.add(new PilotiVittorie(d1, d2, vittorie)) ;
+			}
+	
+			conn.close();
+			return pilotiVittorie ;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("SQL Query Error");
+		}
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.formulaone.model.Driver;
 import it.polito.tdp.formulaone.model.DriverPunteggio;
 import it.polito.tdp.formulaone.model.Model;
 import it.polito.tdp.formulaone.model.Season;
@@ -44,14 +45,35 @@ public class FormulaOneController {
     	DriverPunteggio d = this.model.getPilotaMigliore() ;
     	
     	txtResult.setText("Ecco il pilota migliore:\n");
-    	txtResult.appendText(d.getD()+" (Vittorie-sconfitte = "+d.getPunteggio()+"\n");
+    	txtResult.appendText(d.getD()+" (Vittorie-sconfitte = "+d.getPunteggio()+")\n");
     	
     	
     }
 
     @FXML
     void doTrovaDreamTeam(ActionEvent event) {
-
+    	txtResult.clear() ;
+    	Season s = boxAnno.getValue() ;
+    	if (s==null) {
+    		txtResult.setText("Selezionare una stagione");
+    		return ;
+    	}
+    	String kTxt = textInputK.getText() ;
+    	int k = 0 ;
+    	try {
+    		k = Integer.parseInt(kTxt) ;
+    	}
+    	catch(NumberFormatException e) {
+    		return ;
+    	}
+    	
+    	List<Driver> dreamTeam = model.calcolaDreamTeam(k) ;
+    	txtResult.setText("Dream Team:\n");
+    	for (Driver d : dreamTeam) {
+    		txtResult.appendText(d+"\n");
+    	}
+    	
+    	
     }
 
     @FXML
